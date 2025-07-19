@@ -3,8 +3,8 @@ Description=Antec Display Service
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/python3 /usr/bin/antec_display_service.py
-WorkingDirectory=/usr/bin
+ExecStart=/usr/bin/python3 /home/hawk/data/code/antec_flux_pro_display_service/antec_display_service.py
+WorkingDirectory=/home/hawk/data/code/antec_flux_pro_display_service
 Restart=always
 User=root
 Group=root
