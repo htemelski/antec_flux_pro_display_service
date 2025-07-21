@@ -5,7 +5,7 @@ import time
 import re
 import usb.core
 import usb.util
-
+import pynvml
 
 def generate_payload(cpu_temp, gpu_temp):
     """
@@ -65,16 +65,11 @@ def send_to_device(payload):
     usb.util.dispose_resources(device)
 
 def read_gpu_temp():
-    def extract_temp(temp_str):
-        match = re.search(r'GPU Current Temp\s*:\s*([0-9]+)\s*C', temp_str)
-        if match:
-            return match.group(1)
-        return None
-
     try:
-        gpu_temp_line = subprocess.check_output('nvidia-smi -q -a | grep "GPU Current Temp"', shell=True, text=True)
-        return extract_temp(gpu_temp_line)
-    except subprocess.CalledProcessError:
+        handle = pynvml.nvmlDeviceGetHandleByIndex(0)
+        temp = pynvml.nvmlDeviceGetTemperature(handle, pynvml.NVML_TEMPERATURE_GPU)
+        return str(temp)
+    except (ImportError, pynvml.NVMLError):
         return "0.0"
 
 def read_cpu_temp():
@@ -91,6 +86,7 @@ def read_cpu_temp():
         return "0.0"
 
 def main():
+    pynvml.nvmlInit()
     while True:
         cpu_temp = read_cpu_temp()
         gpu_temp = read_gpu_temp()
