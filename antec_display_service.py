@@ -80,7 +80,7 @@ def read_cpu_temp():
         return None
 
     try:
-        cpu_temp_line = subprocess.check_output('sensors | grep Tctl:', shell=True, text=True)
+        cpu_temp_line = subprocess.check_output('sensors k10temp-pci-00c3', shell=True, text=True)
         return extract_temp(cpu_temp_line)
     except subprocess.CalledProcessError:
         return "0.0"
